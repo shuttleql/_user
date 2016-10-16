@@ -69,7 +69,7 @@ object UsersDAO extends TableQuery(new Users(_)) {
     }
   }
 
-  def deactivate(id: Int): Option[models.Success] = {
+  def deactivate(id: Int): Option[_] = {
     val db = initDb
 
     try {
@@ -78,9 +78,7 @@ object UsersDAO extends TableQuery(new Users(_)) {
       val isActive = for { u <- users if u.id === id } yield u.isActive
       val updateAction = isActive.update(false)
 
-
-      Await.ready(db.run(updateAction), Duration.Inf)
-      Some(models.Success(message = "Successfully deactivated user."))
+      Some(Await.ready(db.run(updateAction), Duration.Inf))
     } catch {
       case e: Exception => None
     } finally {

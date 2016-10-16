@@ -16,7 +16,7 @@ class _UserServlet extends UserServiceStack with JacksonJsonSupport {
   get("/setup") {
     UsersDAO.setupTables() match {
       case Some(results) =>
-        Ok(models.Success(message = "Successfully set up tables."))
+        Ok(reason = "Success.")
       case None =>
         InternalServerError(reason = "Error creating tables.")
     }
@@ -81,8 +81,8 @@ class _UserServlet extends UserServiceStack with JacksonJsonSupport {
     TypeUtil.toInt(params.get("id")) match {
       case Some(i: Int) =>
         UsersDAO.deactivate(i) match {
-          case Some(result) =>
-            Ok(result)
+          case Some(_) =>
+            Ok(reason = "Success.")
           case None =>
             NotFound(reason = "Something went wrong.")
         }
