@@ -15,10 +15,8 @@ object UsersDAO extends TableQuery(new Users(_)) {
   def setupTables(): Option[Unit] = {
     val db = initDb
 
-    val users = TableQuery[Users]
-
     try {
-      Option(Await.result(db.run(users.schema.create), Duration.Inf))
+      Option(Await.result(db.run(this.schema.create), Duration.Inf))
     } catch {
       case e: Exception => None
     } finally {
@@ -30,8 +28,7 @@ object UsersDAO extends TableQuery(new Users(_)) {
     val db = initDb
 
     try {
-      val users = TableQuery[Users]
-      val results: Seq[User] = Await.result(db.run(users.result), Duration.Inf)
+      val results: Seq[User] = Await.result(db.run(this.result), Duration.Inf)
       Option(results)
     } catch {
       case e: Exception => None
@@ -44,8 +41,7 @@ object UsersDAO extends TableQuery(new Users(_)) {
     val db = initDb
 
     try {
-      val users = TableQuery[Users]
-      Await.result(db.run(users.filter(_.id === id).result).map(_.headOption), Duration.Inf)
+      Await.result(db.run(this.filter(_.id === id).result).map(_.headOption), Duration.Inf)
     } catch {
       case e: Exception => None
     } finally {
@@ -57,10 +53,9 @@ object UsersDAO extends TableQuery(new Users(_)) {
     val db = initDb
 
     try {
-      val users = TableQuery[Users]
       val updatedUser = user.copy(id = Some(id))
 
-      Await.ready(db.run(users.filter(_.id === id).update(updatedUser)), Duration.Inf)
+      Await.ready(db.run(this.filter(_.id === id).update(updatedUser)), Duration.Inf)
       Some(updatedUser)
     } catch {
       case e: Exception => None
@@ -73,9 +68,7 @@ object UsersDAO extends TableQuery(new Users(_)) {
     val db = initDb
 
     try {
-      val users = TableQuery[Users]
-
-      val isActive = for { u <- users if u.id === id } yield u.isActive
+      val isActive = for { u <- this if u.id === id } yield u.isActive
       val updateAction = isActive.update(false)
 
       Some(Await.ready(db.run(updateAction), Duration.Inf))
@@ -91,8 +84,7 @@ object UsersDAO extends TableQuery(new Users(_)) {
     val db = initDb
 
     try {
-      val users = TableQuery[Users]
-      val result: User = Await.result(db.run(users returning users += newUser), Duration.Inf)
+      val result: User = Await.result(db.run(this returning this += newUser), Duration.Inf)
       Option(result)
     } catch {
       case e: Exception => None
