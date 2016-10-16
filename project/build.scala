@@ -29,7 +29,13 @@ object UserServiceBuild extends Build {
         "org.scalatra" %% "scalatra-specs2" % ScalatraVersion % "test",
         "ch.qos.logback" % "logback-classic" % "1.1.5" % "runtime",
         "org.eclipse.jetty" % "jetty-webapp" % "9.2.15.v20160210" % "container",
-        "javax.servlet" % "javax.servlet-api" % "3.1.0" % "provided"
+        "javax.servlet" % "javax.servlet-api" % "3.1.0" % "provided",
+        "org.scalatra" %% "scalatra-json" % ScalatraVersion,
+        "org.json4s" %% "json4s-jackson" % "3.3.0",
+        "com.typesafe.slick" %% "slick" % "3.1.1",
+        "org.slf4j" % "slf4j-nop" % "1.6.4",
+        "org.postgresql" % "postgresql" % "9.4.1211",
+        "com.typesafe.slick" %% "slick-hikaricp" % "3.1.1"
       ),
       scalateTemplateConfig in Compile <<= (sourceDirectory in Compile){ base =>
         Seq(
