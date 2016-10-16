@@ -1,6 +1,6 @@
 package com.shuttleql.services.user
 
-import com.shuttleql.services.user.models.User
+import com.shuttleql.services.user.tables.{User, Users}
 import com.shuttleql.services.user.utils.TypeUtil
 import org.json4s.{DefaultFormats, Formats}
 import org.scalatra._
@@ -13,38 +13,82 @@ class _UserServlet extends UserServiceStack with JacksonJsonSupport {
     contentType = formats("json")
   }
 
-  get("/users") {
-    val all = List(
-      User(1, "Clement", "Hoang", true, true, "male", "clem@mail.com", "123", 4, "singles" ),
-      User(2, "Jason", "Fang", false, true, "male", "jason@mail.com", "123", 3, "singles" )
-    )
+  get("/setup") {
+    UsersDAO.setupTables() match {
+      case Some(results) =>
+        Ok(models.Success(message = "Successfully set up tables."))
+      case None =>
+        InternalServerError(reason = "Error creating tables.")
+    }
+  }
 
-    Ok(all)
+  get("/users") {
+    UsersDAO.getAll() match {
+      case Some(results) =>
+        Ok(results)
+      case None =>
+        NoContent(reason = "No users found.")
+    }
   }
 
   get("/users/:id") {
     TypeUtil.toInt(params.get("id")) match {
-      case Some(i: Int)=>
-        Ok(User(1, "Clement", "Hoang", true, true, "male", "clem@mail.com", "123", 4, "singles" ))
+      case Some(i: Int) =>
+        UsersDAO.getOne(i) match {
+          case Some(result) =>
+            Ok(result)
+          case None =>
+            NotFound(reason = "Specified user not found.")
+        }
       case _ =>
         BadRequest(reason = "Invalid 'id' parameter.")
     }
   }
 
   post("/users") {
-    val newUser = parsedBody.extract[User]
+    try {
+      val newUser = parsedBody.extract[User]
 
-    Created(newUser)
+      UsersDAO.create(newUser) match {
+        case Some(results) =>
+          Created(results)
+        case None =>
+          InternalServerError(reason = "Cannot create user.")
+      }
+    } catch {
+      case e: Exception =>
+        InternalServerError(reason = "Problem with payload.")
+    }
   }
 
   put("/users/:id") {
     val updatedUser = parsedBody.extract[User]
 
-    Ok(updatedUser)
+    TypeUtil.toInt(params.get("id")) match {
+      case Some(i: Int) =>
+        UsersDAO.update(i, updatedUser) match {
+          case Some(result) =>
+            Ok(result)
+          case None =>
+            NotFound(reason = "Something went wrong.")
+        }
+      case _ =>
+        BadRequest(reason = "Invalid 'id' parameter.")
+    }
   }
 
   delete("/users/:id") {
-    NoContent(reason = "Successfully deactivated user")
+    TypeUtil.toInt(params.get("id")) match {
+      case Some(i: Int) =>
+        UsersDAO.deactivate(i) match {
+          case Some(result) =>
+            Ok(result)
+          case None =>
+            NotFound(reason = "Something went wrong.")
+        }
+      case _ =>
+        BadRequest(reason = "Invalid 'id' parameter.")
+    }
   }
 
   after() {
