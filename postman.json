@@ -1,0 +1,107 @@
+{
+	"variables": [],
+	"info": {
+		"name": "ShuttleQL User Service",
+		"_postman_id": "d5f5729b-5ca3-57d7-3ca1-7a9a93eb13ff",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "POST http://localhost:8080/users",
+			"request": {
+				"url": "http://localhost:8080/users",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t  \"firstName\": \"Tony\",\n\t  \"lastName\": \"Lu\",\n\t  \"gender\": \"Male\",\n\t  \"email\": \"daddy@dong.net\",\n\t  \"password\": \"ez\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "GET http://localhost:8080/users/1",
+			"request": {
+				"url": "http://localhost:8080/users/1",
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "GET http://localhost:8080/users",
+			"request": {
+				"url": "http://localhost:8080/users",
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "PUT http://localhost:8080/users/1",
+			"request": {
+				"url": "http://localhost:8080/users/1",
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t  \"firstName\": \"David\",\n\t  \"lastName\": \"Dong\",\n\t  \"isAdmin\": false,\n\t  \"isActive\": true,\n\t  \"gender\": \"Female\",\n\t  \"email\": \"daddy@dong.net\",\n\t  \"password\": \"ez\",\n\t  \"level\": 1,\n\t  \"preference\": \"Singles\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE http://localhost:8080/users/1",
+			"request": {
+				"url": "http://localhost:8080/users/1",
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "GET http://localhost:8080/setup",
+			"request": {
+				"url": "http://localhost:8080/setup",
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}
