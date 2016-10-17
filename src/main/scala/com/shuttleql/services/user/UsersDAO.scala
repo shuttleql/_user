@@ -1,11 +1,13 @@
 package com.shuttleql.services.user
 
+import com.roundeights.hasher.Hasher
 import com.shuttleql.services.user.tables.{User, Users}
 import slick.lifted.TableQuery
 import slick.driver.PostgresDriver.api._
 import scala.concurrent.duration.Duration
 import scala.concurrent._
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.language.postfixOps
 
 object UsersDAO extends TableQuery(new Users(_)) {
   def initDb() = {
@@ -80,8 +82,11 @@ object UsersDAO extends TableQuery(new Users(_)) {
 
   }
 
-  def create(newUser: User): Option[User] = {
+  def create(user: User): Option[User] = {
     val db = initDb
+
+    val hashedPw = Hasher(user.password).bcrypt
+    val newUser = user.copy(password = hashedPw)
 
     try {
       val result: User = Await.result(db.run(this returning this += newUser), Duration.Inf)
