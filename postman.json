@@ -102,6 +102,26 @@
 				"description": ""
 			},
 			"response": []
+		},
+		{
+			"name": "POST http://localhost:8080/users/auth",
+			"request": {
+				"url": "http://localhost:8080/users/auth",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"email\": \"daddy@dong.net\",\n\t\"password\": \"ez\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
 		}
 	]
 }
