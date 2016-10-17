@@ -22,10 +22,12 @@ class Users(tag: Tag) extends Table[User](tag, "users") {
   def isAdmin = column[Boolean]("isAdmin")
   def isActive = column[Boolean]("isActive")
   def gender = column[String]("gender")
-  def email = column[String]("email")
+  def email = column[String]("email", O.SqlType("VARCHAR(65535)"))
   def password = column[String]("password")
   def level = column[Int]("level")
   def preference = column[String]("preference")
   def * = (id.?, firstName, lastName, isAdmin, isActive, gender, email, password, level, preference) <> (User.tupled, User.unapply)
+
+  def idxEmail = index("idx_email", email, unique = true)
 }
 
