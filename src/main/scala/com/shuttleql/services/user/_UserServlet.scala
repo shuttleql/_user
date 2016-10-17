@@ -91,6 +91,31 @@ class _UserServlet extends UserServiceStack with JacksonJsonSupport {
     }
   }
 
+  post("/users/auth") {
+    val credentials = try {
+      Some(parsedBody.extract[Map[String, String]])
+    } catch {
+      case e: Exception => None
+    }
+
+    credentials match {
+      case Some(c: Map[String, String]) => {
+        if (!c.contains("email") || !c.contains("password")) {
+          BadRequest(reason = "Must specify email and password.")
+        } else {
+          val email = c.get("email").getOrElse("")
+          val password = c.get("password").getOrElse("")
+
+          UsersDAO.authenticate(email, password) match {
+            case Some(result) => Ok(result)
+            case None => BadRequest(reason = "Incorrect credentials.")
+          }
+        }
+      }
+      case None => BadRequest(reason = "Malformed request.")
+    }
+  }
+
   after() {
   }
 
