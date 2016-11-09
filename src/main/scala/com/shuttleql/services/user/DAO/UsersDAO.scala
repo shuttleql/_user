@@ -1,4 +1,4 @@
-package com.shuttleql.services.user
+package com.shuttleql.services.user.DAO
 
 import com.roundeights.hasher.Hasher
 import com.shuttleql.services.user.tables.{User, Users}
@@ -51,6 +51,28 @@ object UsersDAO extends TableQuery(new Users(_)) {
     }
   }
 
+  def getByEmailPass(email: String, password: String): Option[User] = {
+    val db = initDb
+
+    try {
+      val hashedPw = Hasher(password).bcrypt
+      val user = (Await.result(db.run(this.filter(_.email === email).result), Duration.Inf)).headOption
+      user match {
+        case Some(u: User) => {
+          (hashedPw hash= u.password) match {
+            case true => Some(u)
+            case false => None
+          }
+        }
+        case None => None
+      }
+    } catch {
+      case e: Exception => None
+    } finally {
+      db.close
+    }
+  }
+
   def update(id: Int, user: User): Option[User] = {
     val db = initDb
 
@@ -90,27 +112,6 @@ object UsersDAO extends TableQuery(new Users(_)) {
     try {
       val result: User = Await.result(db.run(this returning this += newUser), Duration.Inf)
       Option(result)
-    } catch {
-      case e: Exception => None
-    } finally {
-      db.close
-    }
-  }
-
-  def authenticate(email: String, pw: String): Option[Map[String, String]] = {
-    val db = initDb
-    try {
-      val user = (Await.result(db.run(this.filter(_.email === email).result), Duration.Inf)).headOption
-
-      user match {
-        case Some(u: User) => {
-          (Hasher(pw).bcrypt hash= u.password) match { // check password
-            case true => Some(Map("token" -> "dummy"))
-            case false => None
-          }
-        }
-        case None => None
-      }
     } catch {
       case e: Exception => None
     } finally {
