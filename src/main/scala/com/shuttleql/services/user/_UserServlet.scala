@@ -2,7 +2,6 @@ package com.shuttleql.services.user
 
 import com.shuttleql.services.user.tables.{User, Users}
 import com.shuttleql.services.user.utils.TypeUtil
-import com.shuttleql.services.user.utils.JWTUtil
 import com.shuttleql.services.user.DAO.UsersDAO
 import org.json4s.{DefaultFormats, Formats}
 import org.scalatra._
@@ -22,25 +21,6 @@ class _UserServlet extends UserServiceStack with JacksonJsonSupport {
         Ok(reason = "Success.")
       case None =>
         InternalServerError(reason = "Error creating tables.")
-    }
-  }
-
-  get("/users/token/:token") {
-    params.get("token") match {
-      case Some(token: String) =>
-        JWTUtil.decodeUserId(token) match {
-          case Some(id: Int) =>
-            UsersDAO.getOne(id) match {
-              case Some(user: User) => 
-                Ok(user)
-              case None =>
-                NotFound(reason = "User not found")
-            }
-          case None =>
-            NotFound(reason = "Token invalid")
-        }
-      case None =>
-        BadRequest(reason = "No token found")
     }
   }
 
@@ -129,15 +109,10 @@ class _UserServlet extends UserServiceStack with JacksonJsonSupport {
           val password = c.get("password").getOrElse("")
 
           UsersDAO.getByEmailPass(email, password) match {
-            case Some(result) => 
-              result.id match {
-                case Some(id: Int) =>
-                  val token = JWTUtil.encodeUserId(id)
-                  Ok(Map("token" -> token))
-                case None =>
-                  BadRequest(reason = "user does not exist")
-              }
-            case None => BadRequest(reason = "Incorrect credentials.")
+            case Some(result: User) => 
+              Ok(result)
+            case None => 
+              BadRequest(reason = "Incorrect credentials.")
           }
         }
       }
