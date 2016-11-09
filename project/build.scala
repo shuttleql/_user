@@ -40,7 +40,6 @@ object UserServiceBuild extends Build {
         "com.typesafe.slick" %% "slick-hikaricp" % "3.1.1",
         "com.roundeights" %% "hasher" % "1.2.0",
         "org.mindrot" % "jbcrypt" % "0.3m",
-        "com.pauldijou" %% "jwt-core" % "0.9.0",
         "com.typesafe" % "config" % "1.3.1"
       ),
       scalateTemplateConfig in Compile <<= (sourceDirectory in Compile){ base =>
