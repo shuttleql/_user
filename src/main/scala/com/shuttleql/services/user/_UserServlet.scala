@@ -2,11 +2,13 @@ package com.shuttleql.services.user
 
 import com.shuttleql.services.user.tables.{User, Users}
 import com.shuttleql.services.user.utils.TypeUtil
+import com.shuttleql.services.user.DAO.UsersDAO
 import org.json4s.{DefaultFormats, Formats}
 import org.scalatra._
 import org.scalatra.json._
 
 class _UserServlet extends UserServiceStack with JacksonJsonSupport {
+
   protected implicit lazy val jsonFormats: Formats = DefaultFormats.withBigDecimal
 
   before() {
@@ -106,9 +108,11 @@ class _UserServlet extends UserServiceStack with JacksonJsonSupport {
           val email = c.get("email").getOrElse("")
           val password = c.get("password").getOrElse("")
 
-          UsersDAO.authenticate(email, password) match {
-            case Some(result) => Ok(result)
-            case None => BadRequest(reason = "Incorrect credentials.")
+          UsersDAO.getByEmailPass(email, password) match {
+            case Some(result: User) => 
+              Ok(result)
+            case None => 
+              BadRequest(reason = "Incorrect credentials.")
           }
         }
       }
