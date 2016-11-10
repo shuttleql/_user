@@ -1,9 +1,14 @@
 # User Service #
 
+## Install sbt ##
+```sh
+brew install sbt
+```
+
 ## Build & Run ##
 
 ```sh
-$ ./sbt
+$ sbt
 > jetty:start
 > browse
 ```
@@ -18,6 +23,7 @@ If `browse` doesn't launch your browser, manually open [http://localhost:8080/](
 $ export DB_PG_URL="jdbc:postgresql://localhost:5432"
 $ export DB_PG_USER=<username>
 $ export DB_PG_PWD=<password>
+$ export HMAC_SECRET=<secret>
 ```
 
 ### Set up initial db
