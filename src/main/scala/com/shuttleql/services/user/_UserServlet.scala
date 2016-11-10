@@ -84,7 +84,7 @@ class _UserServlet extends UserServiceStack with JacksonJsonSupport {
       case Some(i: Int) =>
         UsersDAO.deactivate(i) match {
           case Some(_) =>
-            Ok(reason = "Success.")
+            NoContent(reason = "Success.")
           case None =>
             NotFound(reason = "Something went wrong.")
         }
