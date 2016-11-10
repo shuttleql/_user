@@ -29,7 +29,7 @@ class _UserServlet extends UserServiceStack with JacksonJsonSupport {
     val secret = conf.getString("secrets.hmac_secret")
 
     (token, key) match {
-      case (Some(t), Some(k)) =>
+      case (Some(t), Some(k)) => true
         val split = t.split("HMAC ")
         split.length match {
           case 2 =>
