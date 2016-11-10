@@ -29,12 +29,12 @@ class _UserServlet extends UserServiceStack with JacksonJsonSupport {
     val secret = conf.getString("secrets.hmac_secret")
 
     (token, key) match {
-      case (Some(t), Some(k)) => true
+      case (Some(t), Some(k)) =>
         val split = t.split("HMAC ")
         split.length match {
           case 2 =>
             HMACAuth.validateHost(split(1), k, secret) match {
-              case true => 
+              case true => return
               case false =>
                 halt(status=401, reason="Forbidden");
             }
