@@ -4,6 +4,7 @@ import com.roundeights.hasher.Hasher
 import com.shuttleql.services.user.tables.{User, Users}
 import slick.lifted.TableQuery
 import slick.driver.PostgresDriver.api._
+
 import scala.concurrent.duration.Duration
 import scala.concurrent._
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -30,7 +31,7 @@ object UsersDAO extends TableQuery(new Users(_)) {
     val db = initDb
 
     try {
-      val results: Seq[User] = Await.result(db.run(this.result), Duration.Inf)
+      val results: Seq[User] = Await.result(db.run(this.filter(_.isActive).result), Duration.Inf)
       Option(results)
     } catch {
       case e: Exception => None
