@@ -40,6 +40,20 @@ object UsersDAO extends TableQuery(new Users(_)) {
     }
   }
 
+  def getAllByIds(ids: List[Int]): Option[Seq[User]] = {
+    val db = initDb
+    
+    try {
+      val results: Seq[User] = Await.result(db.run(this.filter(_.isActive)
+        .filter(_.id.inSetBind(ids)).result), Duration.Inf)
+      Option(results)
+    } catch {
+      case e: Exception => None
+    } finally {
+      db.close
+    }
+  }
+
   def getOne(id: Int): Option[User] = {
     val db = initDb
 

@@ -9,6 +9,9 @@ import org.scalatra.json._
 import com.typesafe.config._
 import com.gandalf.HMACAuth
 
+// Strong params
+case class UserIdParams(ids: List[Int])
+
 class _UserServlet extends UserServiceStack with JacksonJsonSupport {
 
   protected implicit lazy val jsonFormats: Formats = DefaultFormats.withBigDecimal
@@ -61,6 +64,21 @@ class _UserServlet extends UserServiceStack with JacksonJsonSupport {
         Ok(results)
       case None =>
         NoContent(reason = "No users found.")
+    }
+  }
+
+  post("/usersByIds") {
+    try {
+      val newUsers = parsedBody.extract[UserIdParams]
+      UsersDAO.getAllByIds(newUsers.ids) match {
+        case Some(results) =>
+          Ok(results)
+        case None =>
+          NoContent(reason = "No users found.")
+      }
+    } catch {
+      case e: Exception =>
+        InternalServerError(reason = "Problem with payload.")
     }
   }
 
