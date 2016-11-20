@@ -41,7 +41,8 @@ object UserServiceBuild extends Build {
         "com.roundeights" %% "hasher" % "1.2.0",
         "org.mindrot" % "jbcrypt" % "0.3m",
         "com.typesafe" % "config" % "1.3.1",
-        "com.shuttleql" %% "gandalf" % "1.0"
+        "com.shuttleql" %% "gandalf" % "1.0",
+        "com.amazonaws" % "aws-java-sdk" % "1.11.46"
       ),
       scalateTemplateConfig in Compile <<= (sourceDirectory in Compile){ base =>
         Seq(
