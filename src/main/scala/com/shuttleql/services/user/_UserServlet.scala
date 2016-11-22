@@ -13,7 +13,7 @@ class _UserServlet extends UserServiceStack with JacksonJsonSupport {
 
   protected implicit lazy val jsonFormats: Formats = DefaultFormats.withBigDecimal
 
-  val conf = ConfigFactory.load();
+  val conf = ConfigFactory.load()
 
   private def getRequest = enrichRequest(request)
   private def getResponse = enrichResponse(response)
@@ -23,7 +23,7 @@ class _UserServlet extends UserServiceStack with JacksonJsonSupport {
     contentType = formats("json")
   }
 
-  def auth() {
+  def auth =  {
     val token = getRequest.header("Authorization")
     val key = getRequest.header("Authorization-Key")
     val secret = conf.getString("secrets.hmac_secret")
@@ -34,7 +34,7 @@ class _UserServlet extends UserServiceStack with JacksonJsonSupport {
         split.length match {
           case 2 =>
             HMACAuth.validateHost(split(1), k, secret) match {
-              case true => return
+              case true => true
               case false =>
                 halt(status=401, reason="Forbidden");
             }
@@ -56,7 +56,7 @@ class _UserServlet extends UserServiceStack with JacksonJsonSupport {
   }
 
   get("/users") {
-    UsersDAO.getAll() match {
+    UsersDAO.getAll match {
       case Some(results) =>
         Ok(results)
       case None =>
@@ -136,8 +136,8 @@ class _UserServlet extends UserServiceStack with JacksonJsonSupport {
         if (!c.contains("email") || !c.contains("password")) {
           BadRequest(reason = "Must specify email and password.")
         } else {
-          val email = c.get("email").getOrElse("")
-          val password = c.get("password").getOrElse("")
+          val email = c.getOrElse("email", "")
+          val password = c.getOrElse("password", "")
 
           UsersDAO.getByEmailPass(email, password) match {
             case Some(result: User) => 

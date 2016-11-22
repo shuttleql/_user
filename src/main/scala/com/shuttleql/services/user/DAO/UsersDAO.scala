@@ -31,7 +31,7 @@ object UsersDAO extends TableQuery(new Users(_)) {
     snsClient.publish(publishReq)
   }
 
-  def initDb() = {
+  def initDb = {
     Database.forConfig("db")
   }
 
@@ -47,7 +47,7 @@ object UsersDAO extends TableQuery(new Users(_)) {
     }
   }
 
-  def getAll(): Option[Seq[User]] = {
+  def getAll: Option[Seq[User]] = {
     val db = initDb
 
     try {
@@ -64,7 +64,7 @@ object UsersDAO extends TableQuery(new Users(_)) {
     val db = initDb
 
     try {
-      Await.result(db.run(this.filter(_.id === id).result).map(_.headOption), Duration.Inf)
+      Await.result(db.run(this.filter(_.id === id).filter(_.isActive).result).map(_.headOption), Duration.Inf)
     } catch {
       case e: Exception => None
     } finally {
@@ -77,7 +77,7 @@ object UsersDAO extends TableQuery(new Users(_)) {
 
     try {
       val hashedPw = Hasher(password).bcrypt
-      val user = (Await.result(db.run(this.filter(_.email === email).result), Duration.Inf)).headOption
+      val user = Await.result(db.run(this.filter(_.email === email).filter(_.isActive).result), Duration.Inf).headOption
       user match {
         case Some(u: User) => {
           (hashedPw hash= u.password) match {
